@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevIO.Business", "src\DevIO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DevIO.Data", "src\DevIO.Data\DevIO.Data.csproj", "{461983F5-6843-4F11-B834-C84EF2608A36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevIO.Api", "src\DevIO.Api\DevIO.Api.csproj", "{703DF578-F7BB-47A7-90C7-DBD83BD1EB9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{461983F5-6843-4F11-B834-C84EF2608A36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{461983F5-6843-4F11-B834-C84EF2608A36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{461983F5-6843-4F11-B834-C84EF2608A36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{703DF578-F7BB-47A7-90C7-DBD83BD1EB9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{703DF578-F7BB-47A7-90C7-DBD83BD1EB9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{703DF578-F7BB-47A7-90C7-DBD83BD1EB9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{703DF578-F7BB-47A7-90C7-DBD83BD1EB9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
