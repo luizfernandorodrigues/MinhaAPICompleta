@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DevIO.Business.Models
 {
-    public class Produto
+    public class Produto : Entity
     {
-        public Guid FornedorId { get; set; }
+        public Guid FornecedorId { get; set; }
+
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public string Imagem { get; set; }
@@ -14,6 +13,7 @@ namespace DevIO.Business.Models
         public DateTime DataCadastro { get; set; }
         public bool Ativo { get; set; }
 
-        /*EF Relations*/
+        /* EF Relations */
+        public Fornecedor Fornecedor { get; set; }
     }
 }
