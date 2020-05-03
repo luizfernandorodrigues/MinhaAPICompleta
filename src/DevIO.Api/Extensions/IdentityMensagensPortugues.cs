@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace DevIO.Api.Data
+namespace DevIO.Api.Extensions
 {
     public class IdentityMensagensPortugues : IdentityErrorDescriber
     {
