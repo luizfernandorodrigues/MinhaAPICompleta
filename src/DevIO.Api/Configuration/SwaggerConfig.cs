@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DevIO.Api.Configuration
 {
@@ -14,7 +17,21 @@ namespace DevIO.Api.Configuration
         {
             services.AddSwaggerGen(c =>
             {
-                c.OperationFilter<SwaggerDefaultValues>();
+            c.OperationFilter<SwaggerDefaultValues>();
+
+                var security = new Dictionary<string, IEnumerable<string>>
+                {
+                    { "Bearer ", new string[]{} }
+                };
+
+                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                {
+                    Description = "Insira o token JWT desta maneira: Bearer {seu token}",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
+                c.AddSecurityRequirement(security);
             });
 
             return services;
@@ -22,6 +39,9 @@ namespace DevIO.Api.Configuration
 
         public static IApplicationBuilder UseSwaggerConfig(this IApplicationBuilder app, IApiVersionDescriptionProvider provider)
         {
+            // caso queira que não valide, comentar essa linha
+            app.UseMiddleware<SwagerAuthorizedMiddleware>(); // deve ser chamado aqui para inserir no pipe line pois de nada adianta depois que a configuração já foi carregada
+
             app.UseSwagger();
             app.UseSwaggerUI(
                 options =>
@@ -29,6 +49,8 @@ namespace DevIO.Api.Configuration
                     foreach (var description in provider.ApiVersionDescriptions)
                         options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                 });
+
+            
             return app;
         }
     }
@@ -38,7 +60,7 @@ namespace DevIO.Api.Configuration
         readonly IApiVersionDescriptionProvider provider;
 
         public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => this.provider = provider;
-        
+
         public void Configure(SwaggerGenOptions options)
         {
             foreach (var description in provider.ApiVersionDescriptions)
@@ -74,7 +96,7 @@ namespace DevIO.Api.Configuration
 
     public class SwaggerDefaultValues : IOperationFilter
     {
-        
+
         public void Apply(Operation operation, OperationFilterContext context)
         {
             var apiDescription = context.ApiDescription;
@@ -84,9 +106,9 @@ namespace DevIO.Api.Configuration
             if (operation.Parameters == null)
                 return;
 
-            foreach(var parameter in operation.Parameters.OfType<NonBodyParameter>())
+            foreach (var parameter in operation.Parameters.OfType<NonBodyParameter>())
             {
-                var description = apiDescription.ParameterDescriptions.First(p=>p.Name == parameter.Name);
+                var description = apiDescription.ParameterDescriptions.First(p => p.Name == parameter.Name);
 
                 if (parameter.Description == null)
                     parameter.Description = description.ModelMetadata?.Description;
@@ -96,6 +118,27 @@ namespace DevIO.Api.Configuration
 
                 parameter.Required |= description.IsRequired;
             }
+        }
+    }
+
+    public class SwagerAuthorizedMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        public SwagerAuthorizedMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task Invoke(HttpContext context)
+        {
+            if(context.Request.Path.StartsWithSegments("/swagger") && !context.User.Identity.IsAuthenticated)
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return;
+            }
+
+            await _next.Invoke(context);
         }
     }
 }
