@@ -40,7 +40,7 @@ namespace DevIO.Api.Configuration
         public static IApplicationBuilder UseSwaggerConfig(this IApplicationBuilder app, IApiVersionDescriptionProvider provider)
         {
             // caso queira que não valide, comentar essa linha
-            app.UseMiddleware<SwagerAuthorizedMiddleware>(); // deve ser chamado aqui para inserir no pipe line pois de nada adianta depois que a configuração já foi carregada
+           // app.UseMiddleware<SwagerAuthorizedMiddleware>(); // deve ser chamado aqui para inserir no pipe line pois de nada adianta depois que a configuração já foi carregada
 
             app.UseSwagger();
             app.UseSwaggerUI(
